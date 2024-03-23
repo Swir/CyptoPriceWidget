@@ -1,0 +1,8 @@
+Witaj!
+- Ceny odswieżają się  co 1minute  jeśli przypniesz token przy wł programie doda się za 1 minute.
+-jeśli nie możesz znaleśc tokena wejdz Przykład linku z coingeckon musi byc waluta  https://www.coingecko.com/pl/waluty/catwifhat-2  wklejamy  tylko to catwifhat-2 końcówke linku 
+-możemy edytować plik "pinned_tokens.json" i wpisywać ręcznie waluty muszą być umieszczone w ten sposób : ["catwifhat-2", "bitcoin", "solana", "iq50", "0x", "0-mee", "binancecoin"]
+-jeśli czegoś nie ogarniasz zapytaj na telegramie @swiru
+
+
+Pozdrawiam Świr :D
