@@ -2,32 +2,44 @@
 
 # 📈 Crypto Price Widget
 
-**Python PyQt5 desktop cryptocurrency price tracker powered by CoinGecko**  
-**Desktopowy monitor cen kryptowalut Python/PyQt5 korzystający z CoinGecko**
+### PyQt5 Desktop Cryptocurrency Price Tracker Powered by CoinGecko
+
+**Python • PyQt5 • Live Prices • 24h Change • Search • Pinned Tokens**
 
 ![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)
-![PyQt5](https://img.shields.io/badge/GUI-PyQt5-41CD52)
-![API](https://img.shields.io/badge/Data-CoinGecko-f7931a)
-![Author](https://img.shields.io/badge/Author-Swir-ff4fa3)
+![PyQt5](https://img.shields.io/badge/GUI-PyQt5-41CD52?logo=qt&logoColor=white)
+![CoinGecko](https://img.shields.io/badge/Data-CoinGecko-f7931a)
+![Mode](https://img.shields.io/badge/Mode-Market%20Monitor-111111)
 
 </div>
 
 ---
 
-## 🇬🇧 English
+## 🚀 About
 
-Crypto Price Widget is a compact Python cryptocurrency price tracker and desktop crypto widget built with PyQt5. It retrieves market data from the CoinGecko API and displays live USD prices and 24-hour changes without requiring a browser.
+**Crypto Price Widget** is a compact PyQt5 desktop application for monitoring cryptocurrency prices without keeping a browser tab open. It retrieves public market data from CoinGecko and displays USD prices together with 24-hour percentage changes.
 
-### ✨ Features
-- live cryptocurrency prices in USD
-- 24-hour percentage change
-- green/red visual change indicator
-- searchable cryptocurrency list
-- pinned-token configuration stored in JSON
-- automatic background refresh
-- multiple historical application versions included in the repository
+The project includes several historical versions, with `v5.py` representing the latest version currently stored in the repository.
 
-### 🚀 Run
+It is designed for users searching for a **crypto price widget**, **desktop cryptocurrency tracker**, **Python CoinGecko app**, **PyQt crypto monitor**, **Bitcoin price desktop widget** or a simple real-time coin-price viewer.
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|---|---|
+| 💵 Live USD prices | Display current cryptocurrency market prices |
+| 📊 24h change | Show daily percentage movement |
+| 🟢🔴 Visual direction | Green/red indication for price movement |
+| 🔎 Search | Find cryptocurrencies from the available list |
+| 📌 Pinned tokens | Store selected assets in JSON |
+| 🔄 Background refresh | Update prices automatically |
+| 🧪 Version history | Multiple development versions included |
+
+---
+
+## 📦 Installation
 
 ```bash
 git clone https://github.com/Swir/CyptoPriceWidget.git
@@ -38,25 +50,41 @@ python v5.py
 
 ---
 
-## 🇵🇱 Polski
+## 🧩 Repository Highlights
 
-Crypto Price Widget to niewielka aplikacja PyQt i desktopowy tracker kryptowalut pozwalający śledzić ceny wybranych coinów bez ciągłego otwierania przeglądarki. Dane pobierane są z API CoinGecko, a program prezentuje aktualną cenę oraz zmianę z ostatnich 24 godzin.
-
-### ✨ Funkcje
-- aktualne ceny kryptowalut w USD
-- procentowa zmiana 24h
-- zielone/czerwone oznaczenie kierunku ceny
-- wyszukiwarka kryptowalut
-- przypięte tokeny zapisywane w JSON
-- automatyczne odświeżanie w tle
-- kilka wersji rozwojowych programu w repozytorium
-
-### 🔎 Discoverability / Keywords
-`crypto price widget` • `cryptocurrency tracker` • `python crypto tracker` • `PyQt5 crypto widget` • `CoinGecko API` • `desktop crypto monitor` • `bitcoin price tracker`
+```text
+CyptoPriceWidget/
+├── v1.py
+├── v2 py QT.py
+├── v3.py
+├── v4.py
+├── v5.py
+├── pinned_tokens.json
+└── README.md
+```
 
 ---
 
-> Market data is informational only. / Dane rynkowe mają charakter wyłącznie informacyjny.
+## 🔍 Discoverability
 
-## 👤 Author / Autor
-Developed by **Swir**.
+`crypto price widget` • `cryptocurrency tracker desktop` • `python crypto tracker` • `pyqt5 crypto widget` • `coingecko desktop app` • `bitcoin price tracker python` • `crypto price monitor` • `desktop coin tracker`
+
+---
+
+## ⚠️ Market Data Disclaimer
+
+Market information is provided for informational purposes only. CoinGecko or network responses may be delayed, rate-limited or unavailable. This project does not provide investment advice or trading recommendations.
+
+---
+
+## 👨‍💻 Author
+
+Developed by **Swir** — [@Swir](https://github.com/Swir)
+
+<div align="center">
+
+### 📈 Your favorite coin prices without another browser tab
+
+⭐ **Star the repository if you find it useful!**
+
+</div>
