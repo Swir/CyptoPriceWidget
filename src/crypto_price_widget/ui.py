@@ -4,9 +4,9 @@ from collections.abc import Callable
 from datetime import datetime
 from typing import Any
 
-from PyQt6.QtCore import QObject, QRunnable, Qt, QThreadPool, QTimer, pyqtSignal
-from PyQt6.QtGui import QColor
-from PyQt6.QtWidgets import (
+from PySide6.QtCore import QObject, QRunnable, Qt, QThreadPool, QTimer, Signal
+from PySide6.QtGui import QColor
+from PySide6.QtWidgets import (
     QComboBox,
     QHBoxLayout,
     QLabel,
@@ -26,9 +26,9 @@ from .settings import AppSettings, SUPPORTED_CURRENCIES, save_settings
 
 
 class TaskSignals(QObject):
-    result = pyqtSignal(object)
-    error = pyqtSignal(str)
-    finished = pyqtSignal()
+    result = Signal(object)
+    error = Signal(str)
+    finished = Signal()
 
 
 class ApiTask(QRunnable):

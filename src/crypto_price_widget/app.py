@@ -3,8 +3,8 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication
 
 from . import __version__
 from .settings import load_settings

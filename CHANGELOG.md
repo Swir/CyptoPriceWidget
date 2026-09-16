@@ -3,7 +3,7 @@
 ## 6.0.0 - 2026-09-16
 
 ### Added
-- Modern PyQt6 desktop interface with blue dark theme and responsive layout.
+- Modern PySide6 / Qt 6 desktop interface with blue dark theme and responsive layout.
 - CoinGecko API client with bounded timeouts, retries, rate-limit handling and clear user-facing errors.
 - Searchable CoinGecko asset catalog and up to 50 pinned assets.
 - USD, EUR, GBP, NOK and PLN display currencies.
@@ -16,7 +16,7 @@
 ### Changed
 - Application branding is corrected to **Crypto Price Widget** while retaining the historical repository URL `CyptoPriceWidget`.
 - Replaced the five parallel legacy scripts with one maintainable `src/` package.
-- Migrated the interface from PyQt5 to PyQt6.
+- Migrated the interface from PyQt5 to the official Qt for Python bindings, PySide6.
 - Removed repository-local runtime state (`pinned_tokens.json`).
 
 ### Removed

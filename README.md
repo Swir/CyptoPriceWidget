@@ -4,7 +4,7 @@
 
 ### Fast, modern desktop cryptocurrency monitoring powered by CoinGecko
 
-**Python 3.10-3.14 • PyQt6 • Background Refresh • Search • Pinned Assets • Windows EXE**
+**Python 3.10-3.14 • PySide6 / Qt 6 • Background Refresh • Search • Pinned Assets • Windows EXE**
 
 </div>
 
@@ -25,6 +25,7 @@ The historical repository is named `CyptoPriceWidget`; the application itself no
 - persistent per-user settings via the platform application-data directory
 - compact dark-blue Windows 11-friendly interface
 - custom application icon and `by Swir` GitHub footer
+- official Qt for Python bindings (PySide6, LGPL/GPL dual-licensed by Qt)
 - automated tests on Python 3.10, 3.11, 3.12, 3.13 and 3.14
 - automated Windows EXE + portable ZIP + SHA256 release pipeline
 
