@@ -1,90 +1,86 @@
 <div align="center">
 
-# 📈 Crypto Price Widget
+# Crypto Price Widget
 
-### PyQt5 Desktop Cryptocurrency Price Tracker Powered by CoinGecko
+### Fast, modern desktop cryptocurrency monitoring powered by CoinGecko
 
-**Python • PyQt5 • Live Prices • 24h Change • Search • Pinned Tokens**
-
-![Python](https://img.shields.io/badge/Python-3.x-3776AB?logo=python&logoColor=white)
-![PyQt5](https://img.shields.io/badge/GUI-PyQt5-41CD52?logo=qt&logoColor=white)
-![CoinGecko](https://img.shields.io/badge/Data-CoinGecko-f7931a)
-![Mode](https://img.shields.io/badge/Mode-Market%20Monitor-111111)
+**Python 3.10-3.14 • PySide6 / Qt 6 • Background Refresh • Search • Pinned Assets • Windows EXE**
 
 </div>
 
----
+## What changed in v6
 
-## 🚀 About
+Crypto Price Widget v6 replaces the old collection of `v1.py` through `v5.py` scripts with one maintainable application package. The UI no longer blocks while downloading prices, settings are stored in the user's application-data directory, network calls use explicit timeouts and retries, and Windows releases are built automatically from tested source.
 
-**Crypto Price Widget** is a compact PyQt5 desktop application for monitoring cryptocurrency prices without keeping a browser tab open. It retrieves public market data from CoinGecko and displays USD prices together with 24-hour percentage changes.
+The historical repository is named `CyptoPriceWidget`; the application itself now uses the corrected **Crypto Price Widget** branding.
 
-The project includes several historical versions, with `v5.py` representing the latest version currently stored in the repository.
+## Features
 
-It is designed for users searching for a **crypto price widget**, **desktop cryptocurrency tracker**, **Python CoinGecko app**, **PyQt crypto monitor**, **Bitcoin price desktop widget** or a simple real-time coin-price viewer.
+- live CoinGecko prices and 24-hour percentage change
+- searchable asset catalog by coin name, symbol or CoinGecko ID
+- up to 50 pinned assets
+- USD, EUR, GBP, NOK and PLN display currencies
+- automatic background refresh without freezing the GUI
+- resilient HTTPS requests with retries for temporary failures and rate limits
+- persistent per-user settings via the platform application-data directory
+- compact dark-blue Windows 11-friendly interface
+- custom application icon and `by Swir` GitHub footer
+- official Qt for Python bindings (PySide6, LGPL/GPL dual-licensed by Qt)
+- automated tests on Python 3.10, 3.11, 3.12, 3.13 and 3.14
+- automated Windows EXE + portable ZIP + SHA256 release pipeline
 
----
-
-## ✨ Features
-
-| Feature | Description |
-|---|---|
-| 💵 Live USD prices | Display current cryptocurrency market prices |
-| 📊 24h change | Show daily percentage movement |
-| 🟢🔴 Visual direction | Green/red indication for price movement |
-| 🔎 Search | Find cryptocurrencies from the available list |
-| 📌 Pinned tokens | Store selected assets in JSON |
-| 🔄 Background refresh | Update prices automatically |
-| 🧪 Version history | Multiple development versions included |
-
----
-
-## 📦 Installation
+## Run from source
 
 ```bash
 git clone https://github.com/Swir/CyptoPriceWidget.git
 cd CyptoPriceWidget
-pip install PyQt5 requests
-python v5.py
+python -m venv .venv
+.venv\Scripts\activate
+python -m pip install -e .
+python main.py
 ```
 
----
+On Linux/macOS, activate the virtual environment using the platform-appropriate command.
 
-## 🧩 Repository Highlights
+## Settings
+
+Pinned assets, currency and refresh interval are saved outside the repository using the operating system's application-data location. This keeps personal state out of Git and lets a packaged EXE update without overwriting preferences.
+
+Supported display currencies: **USD, EUR, GBP, NOK, PLN**. The default refresh interval is 45 seconds, with the code enforcing a minimum of 20 seconds to reduce unnecessary API pressure.
+
+## Development
+
+```bash
+python -m pip install -e ".[dev]"
+pytest
+python tools/build_icon.py
+```
+
+Project layout:
 
 ```text
-CyptoPriceWidget/
-├── v1.py
-├── v2 py QT.py
-├── v3.py
-├── v4.py
-├── v5.py
-├── pinned_tokens.json
-└── README.md
+src/crypto_price_widget/   application package
+assets/                    source artwork
+tests/                     unit tests
+tools/build_icon.py        PNG/ICO generator
+.github/workflows/         CI and Windows release automation
+main.py                    application entry point
 ```
 
----
+## Releases
 
-## 🔍 Discoverability
+Numbered releases contain:
 
-`crypto price widget` • `cryptocurrency tracker desktop` • `python crypto tracker` • `pyqt5 crypto widget` • `coingecko desktop app` • `bitcoin price tracker python` • `crypto price monitor` • `desktop coin tracker`
+- `CryptoPriceWidget.exe`
+- `CryptoPriceWidget-vX.Y.Z-Windows-x64.zip`
+- SHA256 checksum files for both downloads
 
----
+The executable is smoke-tested before publication.
 
-## ⚠️ Market Data Disclaimer
+## Market-data disclaimer
 
-Market information is provided for informational purposes only. CoinGecko or network responses may be delayed, rate-limited or unavailable. This project does not provide investment advice or trading recommendations.
+Prices can be delayed, unavailable or rate-limited by the upstream provider. Crypto Price Widget is an informational monitor only; it does not execute trades and does not provide financial or investment advice.
 
----
+## Author
 
-## 👨‍💻 Author
-
-Developed by **Swir** — [@Swir](https://github.com/Swir)
-
-<div align="center">
-
-### 📈 Your favorite coin prices without another browser tab
-
-⭐ **Star the repository if you find it useful!**
-
-</div>
+Developed by **Swir** — https://github.com/Swir
