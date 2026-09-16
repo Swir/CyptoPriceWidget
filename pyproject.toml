@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "crypto-price-widget-swir"
+version = "6.0.0"
+description = "Modern desktop cryptocurrency price widget powered by CoinGecko."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Swir"}]
+dependencies = [
+  "PyQt6>=6.11,<7",
+  "requests>=2.32,<3",
+  "platformdirs>=4.11,<5",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+  "PyInstaller>=6,<7",
+  "Pillow>=11,<13",
+]
+
+[project.scripts]
+crypto-price-widget = "crypto_price_widget.app:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
