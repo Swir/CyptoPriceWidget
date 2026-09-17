@@ -21,8 +21,11 @@ from PySide6.QtWidgets import (
 
 from .api import CoinGeckoClient
 from .formatting import build_ticker_text, format_change, format_price
+from .i18n import resolve_language, tr
 from .models import Coin, PriceQuote
-from .settings import AppSettings, SUPPORTED_CURRENCIES, save_settings
+from .settings import AppSettings, SUPPORTED_CURRENCIES, SUPPORTED_LANGUAGES, save_settings
+
+REFRESH_OPTIONS = (20, 30, 40, 60, 120, 300)
 
 
 class TaskSignals(QObject):
@@ -47,7 +50,7 @@ class ApiTask(QRunnable):
 
 
 class CryptoPriceWindow(QMainWindow):
-    def __init__(self, settings: AppSettings) -> None:
+    def __init__(self, settings: AppSettings, *, start_network: bool = True) -> None:
         super().__init__()
         self.settings = settings
         self.client = CoinGeckoClient()
@@ -57,12 +60,15 @@ class CryptoPriceWindow(QMainWindow):
         self._prices_busy = False
         self._ticker_full_text = ""
         self._ticker_index = 0
+        self._last_quotes: dict[str, PriceQuote] = {}
+        self._language = resolve_language(self.settings.language)
 
         self.setWindowTitle("Crypto Price Widget — by Swir")
-        self.resize(820, 550)
-        self.setMinimumSize(680, 440)
+        self.resize(900, 570)
+        self.setMinimumSize(720, 460)
         self._build_ui()
         self._apply_theme()
+        self._apply_texts()
 
         self.refresh_timer = QTimer(self)
         self.refresh_timer.timeout.connect(self.refresh_quotes)
@@ -73,8 +79,15 @@ class CryptoPriceWindow(QMainWindow):
         self.ticker_timer.start(28)
 
         self._rebuild_table({})
-        self.load_coin_catalog()
-        self.refresh_quotes()
+        if start_network:
+            self.load_coin_catalog()
+            self.refresh_quotes()
+        else:
+            self._set_ticker_text(self._t("ticker_waiting"))
+            self.status.setText(self._t("smoke_ready"))
+
+    def _t(self, key: str, **values: object) -> str:
+        return tr(self._language, key, **values)
 
     def _build_ui(self) -> None:
         central = QWidget(self)
@@ -83,51 +96,77 @@ class CryptoPriceWindow(QMainWindow):
         root.setSpacing(12)
 
         header = QHBoxLayout()
-        title = QLabel("CRYPTO PRICE WIDGET")
-        title.setObjectName("title")
-        subtitle = QLabel("CoinGecko market monitor")
-        subtitle.setObjectName("muted")
-        header.addWidget(title)
+        self.title = QLabel("CRYPTO PRICE WIDGET")
+        self.title.setObjectName("title")
+        self.subtitle = QLabel()
+        self.subtitle.setObjectName("muted")
+        header.addWidget(self.title)
         header.addStretch(1)
-        header.addWidget(subtitle)
+        header.addWidget(self.subtitle)
         root.addLayout(header)
 
-        self.ticker = QLabel("Classic ticker • waiting for market data…")
+        self.ticker = QLabel()
         self.ticker.setObjectName("ticker")
         self.ticker.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
         root.addWidget(self.ticker)
 
         controls = QHBoxLayout()
         self.search = QLineEdit()
-        self.search.setPlaceholderText("Search by name, symbol or CoinGecko ID…")
         self.search.textChanged.connect(self._filter_coins)
         controls.addWidget(self.search, 2)
 
         self.coin_combo = QComboBox()
-        self.coin_combo.setMinimumWidth(260)
+        self.coin_combo.setMinimumWidth(240)
         controls.addWidget(self.coin_combo, 2)
 
-        self.pin_button = QPushButton("Pin")
+        self.pin_button = QPushButton()
         self.pin_button.clicked.connect(self.pin_selected)
         controls.addWidget(self.pin_button)
 
-        self.unpin_button = QPushButton("Unpin")
+        self.unpin_button = QPushButton()
         self.unpin_button.clicked.connect(self.unpin_selected)
         controls.addWidget(self.unpin_button)
 
-        self.currency = QComboBox()
-        self.currency.addItems(SUPPORTED_CURRENCIES)
-        self.currency.setCurrentText(self.settings.currency)
-        self.currency.currentTextChanged.connect(self.change_currency)
-        controls.addWidget(self.currency)
-
-        self.refresh_button = QPushButton("Refresh")
+        self.refresh_button = QPushButton()
         self.refresh_button.clicked.connect(self.refresh_quotes)
         controls.addWidget(self.refresh_button)
         root.addLayout(controls)
 
+        options = QHBoxLayout()
+        self.currency_label = QLabel("Currency")
+        self.currency_label.setObjectName("muted")
+        options.addWidget(self.currency_label)
+        self.currency = QComboBox()
+        self.currency.addItems(SUPPORTED_CURRENCIES)
+        self.currency.setCurrentText(self.settings.currency)
+        self.currency.currentTextChanged.connect(self.change_currency)
+        options.addWidget(self.currency)
+
+        self.interval_label = QLabel()
+        self.interval_label.setObjectName("muted")
+        options.addWidget(self.interval_label)
+        self.refresh_interval = QComboBox()
+        for seconds in REFRESH_OPTIONS:
+            self.refresh_interval.addItem(f"{seconds}s", seconds)
+        if self.settings.refresh_seconds not in REFRESH_OPTIONS:
+            self.refresh_interval.addItem(f"{self.settings.refresh_seconds}s", self.settings.refresh_seconds)
+        index = self.refresh_interval.findData(self.settings.refresh_seconds)
+        self.refresh_interval.setCurrentIndex(max(index, 0))
+        self.refresh_interval.currentIndexChanged.connect(self.change_refresh_interval)
+        options.addWidget(self.refresh_interval)
+
+        self.language_label = QLabel()
+        self.language_label.setObjectName("muted")
+        options.addWidget(self.language_label)
+        self.language_combo = QComboBox()
+        self.language_combo.addItems(SUPPORTED_LANGUAGES)
+        self.language_combo.setCurrentText(self.settings.language)
+        self.language_combo.currentTextChanged.connect(self.change_language)
+        options.addWidget(self.language_combo)
+        options.addStretch(1)
+        root.addLayout(options)
+
         self.table = QTableWidget(0, 4)
-        self.table.setHorizontalHeaderLabels(["Asset", "Price", "24h", "Status"])
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
@@ -136,7 +175,7 @@ class CryptoPriceWindow(QMainWindow):
         root.addWidget(self.table, 1)
 
         footer = QHBoxLayout()
-        self.status = QLabel("Starting…")
+        self.status = QLabel()
         self.status.setObjectName("muted")
         self.updated = QLabel("")
         self.updated.setObjectName("muted")
@@ -150,6 +189,27 @@ class CryptoPriceWindow(QMainWindow):
         author.setObjectName("author")
         root.addWidget(author, alignment=Qt.AlignmentFlag.AlignRight)
         self.setCentralWidget(central)
+
+    def _apply_texts(self) -> None:
+        self.subtitle.setText(self._t("subtitle"))
+        self.search.setPlaceholderText(self._t("search_placeholder"))
+        self.pin_button.setText(self._t("pin"))
+        self.unpin_button.setText(self._t("unpin"))
+        self.refresh_button.setText(self._t("refresh"))
+        self.currency_label.setText("Currency" if self._language == "EN" else ("Waluta" if self._language == "PL" else "Valuta"))
+        self.interval_label.setText(self._t("refresh_interval"))
+        self.language_label.setText(self._t("language"))
+        self.table.setHorizontalHeaderLabels([
+            self._t("asset"),
+            self._t("price"),
+            self._t("change_24h"),
+            self._t("state"),
+        ])
+        if not self.status.text():
+            self.status.setText(self._t("starting"))
+        if not self._ticker_full_text:
+            self.ticker.setText(self._t("ticker_waiting"))
+        self._rebuild_table(self._last_quotes)
 
     def _apply_theme(self) -> None:
         self.setStyleSheet(
@@ -192,13 +252,14 @@ class CryptoPriceWindow(QMainWindow):
         self.pool.start(task)
 
     def load_coin_catalog(self) -> None:
-        self.status.setText("Loading CoinGecko asset catalog…")
+        self.status.setText(self._t("loading_catalog"))
         self._start_task(self.client.list_coins, self._catalog_loaded)
 
     def _catalog_loaded(self, coins: list[Coin]) -> None:
         self.coins = coins
         self._filter_coins(self.search.text())
-        self.status.setText(f"Loaded {len(coins):,} assets")
+        self.status.setText(self._t("loaded_assets", count=len(coins)))
+        self._rebuild_table(self._last_quotes)
 
     def _filter_coins(self, text: str) -> None:
         needle = text.strip().casefold()
@@ -220,11 +281,11 @@ class CryptoPriceWindow(QMainWindow):
         if not coin_id or coin_id in self.settings.pinned:
             return
         if len(self.settings.pinned) >= 50:
-            self.status.setText("Pinned-asset limit reached (50).")
+            self.status.setText(self._t("pin_limit"))
             return
         self.settings.pinned.append(str(coin_id))
         save_settings(self.settings)
-        self._rebuild_table({})
+        self._rebuild_table(self._last_quotes)
         self.refresh_quotes()
 
     def unpin_selected(self) -> None:
@@ -235,8 +296,9 @@ class CryptoPriceWindow(QMainWindow):
         coin_id = item.data(Qt.ItemDataRole.UserRole) if item else None
         if coin_id in self.settings.pinned:
             self.settings.pinned.remove(coin_id)
+            self._last_quotes.pop(str(coin_id), None)
             save_settings(self.settings)
-            self._rebuild_table({})
+            self._rebuild_table(self._last_quotes)
             self.refresh_quotes()
 
     def change_currency(self, currency: str) -> None:
@@ -244,28 +306,55 @@ class CryptoPriceWindow(QMainWindow):
         save_settings(self.settings)
         self.refresh_quotes()
 
+    def change_refresh_interval(self) -> None:
+        seconds = self.refresh_interval.currentData()
+        if not isinstance(seconds, int):
+            return
+        self.settings.refresh_seconds = min(900, max(20, seconds))
+        save_settings(self.settings)
+        self.refresh_timer.setInterval(self.settings.refresh_seconds * 1000)
+        if self.settings.pinned:
+            self.status.setText(self._t("live", seconds=self.settings.refresh_seconds))
+
+    def change_language(self, language: str) -> None:
+        language = language.upper()
+        if language not in SUPPORTED_LANGUAGES:
+            return
+        self.settings.language = language
+        self._language = resolve_language(language)
+        save_settings(self.settings)
+        self._apply_texts()
+        if self.settings.pinned and self._last_quotes:
+            self._set_ticker_text(build_ticker_text(self.settings.pinned, self._last_quotes, self.settings.currency))
+            self.status.setText(self._t("live", seconds=self.settings.refresh_seconds))
+        elif not self.settings.pinned:
+            self._set_ticker_text(self._t("no_pins"))
+            self.status.setText(self._t("pin_to_begin"))
+
     def refresh_quotes(self) -> None:
         if self._prices_busy:
             return
         if not self.settings.pinned:
+            self._last_quotes = {}
             self._rebuild_table({})
-            self._set_ticker_text("No pinned assets")
-            self.status.setText("Pin an asset to begin monitoring.")
+            self._set_ticker_text(self._t("no_pins"))
+            self.status.setText(self._t("pin_to_begin"))
             return
         ids = tuple(self.settings.pinned)
         currency = self.settings.currency
-        self.status.setText(f"Refreshing {len(ids)} pinned asset(s)…")
+        self.status.setText(self._t("refreshing", count=len(ids)))
         self._start_task(lambda: self.client.get_quotes(ids, currency), self._quotes_loaded, price_task=True)
 
     def _quotes_loaded(self, quotes: dict[str, PriceQuote]) -> None:
+        self._last_quotes = dict(quotes)
         self._rebuild_table(quotes)
         self._set_ticker_text(build_ticker_text(self.settings.pinned, quotes, self.settings.currency))
         stamp = datetime.now().strftime("%H:%M:%S")
-        self.updated.setText(f"Updated {stamp}")
-        self.status.setText(f"Live • refresh every {self.settings.refresh_seconds}s")
+        self.updated.setText(self._t("updated", time=stamp))
+        self.status.setText(self._t("live", seconds=self.settings.refresh_seconds))
 
     def _set_ticker_text(self, text: str) -> None:
-        self._ticker_full_text = text or "Waiting for market data…"
+        self._ticker_full_text = text or self._t("ticker_waiting")
         self._ticker_index = 0
         self.ticker.setText("")
 
@@ -276,8 +365,6 @@ class CryptoPriceWindow(QMainWindow):
             self.ticker.setText(self._ticker_full_text[: self._ticker_index])
             self._ticker_index += 1
         else:
-            # Briefly loop the familiar typewriter animation from the classic widget
-            # without reconstructing partial HTML markup character by character.
             self._ticker_index = 0
 
     def _coin_label(self, coin_id: str) -> str:
@@ -297,7 +384,7 @@ class CryptoPriceWindow(QMainWindow):
             change = QTableWidgetItem(format_change(change_value))
             if change_value is not None:
                 change.setForeground(QColor("#58d68d" if change_value >= 0 else "#ff6b7a"))
-            status = QTableWidgetItem("Live" if quote and quote.price is not None else "Waiting")
+            status = QTableWidgetItem(self._t("live") if quote and quote.price is not None else self._t("waiting"))
             self.table.setItem(row, 0, asset)
             self.table.setItem(row, 1, price)
             self.table.setItem(row, 2, change)
@@ -305,7 +392,7 @@ class CryptoPriceWindow(QMainWindow):
         self.table.resizeColumnsToContents()
 
     def _show_error(self, message: str) -> None:
-        self.status.setText(f"Market data unavailable: {message}")
+        self.status.setText(self._t("market_error", message=message))
 
     def closeEvent(self, event) -> None:  # noqa: N802 - Qt API name
         save_settings(self.settings)
