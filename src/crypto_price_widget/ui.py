@@ -133,7 +133,7 @@ class CryptoPriceWindow(QMainWindow):
         root.addLayout(controls)
 
         options = QHBoxLayout()
-        self.currency_label = QLabel("Currency")
+        self.currency_label = QLabel()
         self.currency_label.setObjectName("muted")
         options.addWidget(self.currency_label)
         self.currency = QComboBox()
@@ -196,7 +196,7 @@ class CryptoPriceWindow(QMainWindow):
         self.pin_button.setText(self._t("pin"))
         self.unpin_button.setText(self._t("unpin"))
         self.refresh_button.setText(self._t("refresh"))
-        self.currency_label.setText("Currency" if self._language == "EN" else ("Waluta" if self._language == "PL" else "Valuta"))
+        self.currency_label.setText(self._t("currency"))
         self.interval_label.setText(self._t("refresh_interval"))
         self.language_label.setText(self._t("language"))
         self.table.setHorizontalHeaderLabels([
@@ -384,7 +384,7 @@ class CryptoPriceWindow(QMainWindow):
             change = QTableWidgetItem(format_change(change_value))
             if change_value is not None:
                 change.setForeground(QColor("#58d68d" if change_value >= 0 else "#ff6b7a"))
-            status = QTableWidgetItem(self._t("live") if quote and quote.price is not None else self._t("waiting"))
+            status = QTableWidgetItem(self._t("live_state") if quote and quote.price is not None else self._t("waiting"))
             self.table.setItem(row, 0, asset)
             self.table.setItem(row, 1, price)
             self.table.setItem(row, 2, change)
