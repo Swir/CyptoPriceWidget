@@ -1,5 +1,27 @@
 # Changelog
 
+## 6.2.0 - 2026-09-17
+
+### Fixed
+- An intentionally empty watch list now survives save/restart instead of being replaced by the default Bitcoin/Ethereum list.
+- Packaged Windows releases now exercise a real Qt GUI startup before publication rather than validating only `--version`.
+
+### Restored
+- Polish UI text from the classic application without returning to duplicated language-specific scripts.
+- English remains available and Norwegian support is included through the same translation layer.
+- Classic 40-second refresh cadence as the default.
+
+### Added
+- `AUTO`, `EN`, `PL` and `NO` language preferences with automatic supported system-language detection.
+- In-app refresh-interval selector for 20/30/40/60/120/300 seconds.
+- Windows source GUI smoke test in pull-request CI.
+- Offline `--smoke-gui` startup mode used to validate Qt, settings, translations and packaged plugins without depending on CoinGecko availability.
+- Regression tests for empty watch lists and UI translations.
+
+### Improved
+- Last successfully loaded quotes are kept in the table while controls or language are changed.
+- README continues to display the custom application icon and now documents the stronger release gate.
+
 ## 6.1.0 - 2026-09-17
 
 ### Restored
