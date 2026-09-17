@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (
 )
 
 from .api import CoinGeckoClient
-from .formatting import format_change, format_price
+from .formatting import build_ticker_text, format_change, format_price
 from .models import Coin, PriceQuote
 from .settings import AppSettings, SUPPORTED_CURRENCIES, save_settings
 
@@ -55,16 +55,22 @@ class CryptoPriceWindow(QMainWindow):
         self.coins: list[Coin] = []
         self._active_tasks: set[ApiTask] = set()
         self._prices_busy = False
+        self._ticker_full_text = ""
+        self._ticker_index = 0
 
         self.setWindowTitle("Crypto Price Widget — by Swir")
-        self.resize(820, 520)
-        self.setMinimumSize(680, 420)
+        self.resize(820, 550)
+        self.setMinimumSize(680, 440)
         self._build_ui()
         self._apply_theme()
 
         self.refresh_timer = QTimer(self)
         self.refresh_timer.timeout.connect(self.refresh_quotes)
         self.refresh_timer.start(self.settings.refresh_seconds * 1000)
+
+        self.ticker_timer = QTimer(self)
+        self.ticker_timer.timeout.connect(self._advance_ticker)
+        self.ticker_timer.start(28)
 
         self._rebuild_table({})
         self.load_coin_catalog()
@@ -85,6 +91,11 @@ class CryptoPriceWindow(QMainWindow):
         header.addStretch(1)
         header.addWidget(subtitle)
         root.addLayout(header)
+
+        self.ticker = QLabel("Classic ticker • waiting for market data…")
+        self.ticker.setObjectName("ticker")
+        self.ticker.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
+        root.addWidget(self.ticker)
 
         controls = QHBoxLayout()
         self.search = QLineEdit()
@@ -148,6 +159,7 @@ class CryptoPriceWindow(QMainWindow):
             QLabel#muted { color: #7892ad; }
             QLabel#author { color: #6d89a5; }
             QLabel#author a { color: #55b7ff; }
+            QLabel#ticker { background: #091728; border: 1px solid #1f4d73; border-radius: 7px; padding: 8px 10px; color: #9fd4ff; font-family: Consolas, monospace; }
             QLineEdit, QComboBox { background: #0d1c2f; border: 1px solid #254766; border-radius: 7px; padding: 8px; }
             QLineEdit:focus, QComboBox:focus { border: 1px solid #55b7ff; }
             QPushButton { background: #12304b; border: 1px solid #2c628c; border-radius: 7px; padding: 8px 12px; font-weight: 600; }
@@ -237,6 +249,7 @@ class CryptoPriceWindow(QMainWindow):
             return
         if not self.settings.pinned:
             self._rebuild_table({})
+            self._set_ticker_text("No pinned assets")
             self.status.setText("Pin an asset to begin monitoring.")
             return
         ids = tuple(self.settings.pinned)
@@ -246,9 +259,26 @@ class CryptoPriceWindow(QMainWindow):
 
     def _quotes_loaded(self, quotes: dict[str, PriceQuote]) -> None:
         self._rebuild_table(quotes)
+        self._set_ticker_text(build_ticker_text(self.settings.pinned, quotes, self.settings.currency))
         stamp = datetime.now().strftime("%H:%M:%S")
         self.updated.setText(f"Updated {stamp}")
         self.status.setText(f"Live • refresh every {self.settings.refresh_seconds}s")
+
+    def _set_ticker_text(self, text: str) -> None:
+        self._ticker_full_text = text or "Waiting for market data…"
+        self._ticker_index = 0
+        self.ticker.setText("")
+
+    def _advance_ticker(self) -> None:
+        if not self._ticker_full_text:
+            return
+        if self._ticker_index <= len(self._ticker_full_text):
+            self.ticker.setText(self._ticker_full_text[: self._ticker_index])
+            self._ticker_index += 1
+        else:
+            # Briefly loop the familiar typewriter animation from the classic widget
+            # without reconstructing partial HTML markup character by character.
+            self._ticker_index = 0
 
     def _coin_label(self, coin_id: str) -> str:
         coin = next((item for item in self.coins if item.id == coin_id), None)
