@@ -8,13 +8,15 @@ from typing import Any
 from platformdirs import user_config_dir
 
 SUPPORTED_CURRENCIES = ("USD", "EUR", "GBP", "NOK", "PLN")
+SUPPORTED_LANGUAGES = ("AUTO", "EN", "PL", "NO")
 
 
 @dataclass(slots=True)
 class AppSettings:
     pinned: list[str]
     currency: str = "USD"
-    refresh_seconds: int = 45
+    refresh_seconds: int = 40
+    language: str = "AUTO"
 
     @classmethod
     def defaults(cls) -> "AppSettings":
@@ -24,24 +26,38 @@ class AppSettings:
     def from_dict(cls, data: Any) -> "AppSettings":
         if not isinstance(data, dict):
             return cls.defaults()
-        raw_pinned = data.get("pinned", [])
-        pinned: list[str] = []
+
+        raw_pinned = data.get("pinned")
         if isinstance(raw_pinned, list):
+            # An intentionally empty watch list is valid and must survive a restart.
+            pinned: list[str] = []
             for item in raw_pinned:
                 value = str(item).strip()
                 if value and value not in pinned and len(pinned) < 50:
                     pinned.append(value)
-        if not pinned:
-            pinned = cls.defaults().pinned
+        else:
+            pinned = cls.defaults().pinned.copy()
+
         currency = str(data.get("currency", "USD")).upper()
         if currency not in SUPPORTED_CURRENCIES:
             currency = "USD"
+
         try:
-            refresh = int(data.get("refresh_seconds", 45))
+            refresh = int(data.get("refresh_seconds", 40))
         except (TypeError, ValueError):
-            refresh = 45
+            refresh = 40
         refresh = min(900, max(20, refresh))
-        return cls(pinned=pinned, currency=currency, refresh_seconds=refresh)
+
+        language = str(data.get("language", "AUTO")).upper()
+        if language not in SUPPORTED_LANGUAGES:
+            language = "AUTO"
+
+        return cls(
+            pinned=pinned,
+            currency=currency,
+            refresh_seconds=refresh,
+            language=language,
+        )
 
 
 def settings_path() -> Path:
