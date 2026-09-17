@@ -5,19 +5,46 @@ from crypto_price_widget.settings import AppSettings, load_settings, save_settin
 
 def test_settings_round_trip(tmp_path) -> None:
     path = tmp_path / "settings.json"
-    original = AppSettings(pinned=["bitcoin", "ethereum"], currency="NOK", refresh_seconds=60)
+    original = AppSettings(
+        pinned=["bitcoin", "ethereum"],
+        currency="NOK",
+        refresh_seconds=60,
+        language="PL",
+    )
     save_settings(original, path)
     loaded = load_settings(path)
     assert loaded.pinned == original.pinned
     assert loaded.currency == "NOK"
     assert loaded.refresh_seconds == 60
+    assert loaded.language == "PL"
 
 
 def test_settings_sanitize_bad_values() -> None:
-    loaded = AppSettings.from_dict({"pinned": ["bitcoin", "bitcoin", ""], "currency": "xyz", "refresh_seconds": 1})
+    loaded = AppSettings.from_dict(
+        {
+            "pinned": ["bitcoin", "bitcoin", ""],
+            "currency": "xyz",
+            "refresh_seconds": 1,
+            "language": "xx",
+        }
+    )
     assert loaded.pinned == ["bitcoin"]
     assert loaded.currency == "USD"
     assert loaded.refresh_seconds == 20
+    assert loaded.language == "AUTO"
+
+
+def test_empty_watch_list_survives_restart(tmp_path) -> None:
+    path = tmp_path / "settings.json"
+    save_settings(AppSettings(pinned=[], currency="PLN", refresh_seconds=40), path)
+    loaded = load_settings(path)
+    assert loaded.pinned == []
+    assert loaded.currency == "PLN"
+
+
+def test_missing_pinned_key_uses_defaults() -> None:
+    loaded = AppSettings.from_dict({"currency": "EUR"})
+    assert loaded.pinned == ["bitcoin", "ethereum"]
 
 
 def test_legacy_pinned_tokens_are_migrated(tmp_path) -> None:
