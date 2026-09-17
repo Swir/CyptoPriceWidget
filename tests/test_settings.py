@@ -60,6 +60,17 @@ def test_legacy_pinned_tokens_are_migrated(tmp_path) -> None:
     assert persisted["pinned"] == ["solana", "bitcoin"]
 
 
+def test_empty_legacy_watch_list_stays_empty(tmp_path) -> None:
+    target = tmp_path / "modern" / "settings.json"
+    legacy = tmp_path / "pinned_tokens.json"
+    legacy.write_text("[]", encoding="utf-8")
+
+    loaded = load_settings(target, legacy)
+
+    assert loaded.pinned == []
+    assert json.loads(target.read_text(encoding="utf-8"))["pinned"] == []
+
+
 def test_broken_legacy_file_does_not_break_startup(tmp_path) -> None:
     target = tmp_path / "settings.json"
     legacy = tmp_path / "pinned_tokens.json"
