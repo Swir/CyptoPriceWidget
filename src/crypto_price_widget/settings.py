@@ -48,12 +48,44 @@ def settings_path() -> Path:
     return Path(user_config_dir("CryptoPriceWidget", "Swir")) / "settings.json"
 
 
-def load_settings(path: Path | None = None) -> AppSettings:
+def _load_legacy_pins(path: Path) -> list[str] | None:
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(raw, list):
+        return None
+    pinned: list[str] = []
+    for item in raw:
+        value = str(item).strip()
+        if value and value not in pinned and len(pinned) < 50:
+            pinned.append(value)
+    return pinned or None
+
+
+def load_settings(path: Path | None = None, legacy_path: Path | None = None) -> AppSettings:
     target = path or settings_path()
     try:
         return AppSettings.from_dict(json.loads(target.read_text(encoding="utf-8")))
-    except (OSError, json.JSONDecodeError):
+    except json.JSONDecodeError:
         return AppSettings.defaults()
+    except OSError:
+        pass
+
+    # v1-v5 stored the pin list beside the script/executable as pinned_tokens.json.
+    # Import it once when the modern per-user settings file does not exist, so an
+    # upgrade does not silently reset a user's watch list.
+    legacy = legacy_path or (Path.cwd() / "pinned_tokens.json")
+    pins = _load_legacy_pins(legacy)
+    if pins:
+        migrated = AppSettings(pinned=pins)
+        try:
+            save_settings(migrated, target)
+        except OSError:
+            # Migration should never prevent the application from starting.
+            pass
+        return migrated
+    return AppSettings.defaults()
 
 
 def save_settings(settings: AppSettings, path: Path | None = None) -> Path:

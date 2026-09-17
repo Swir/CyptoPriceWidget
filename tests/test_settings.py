@@ -1,3 +1,5 @@
+import json
+
 from crypto_price_widget.settings import AppSettings, load_settings, save_settings
 
 
@@ -16,3 +18,24 @@ def test_settings_sanitize_bad_values() -> None:
     assert loaded.pinned == ["bitcoin"]
     assert loaded.currency == "USD"
     assert loaded.refresh_seconds == 20
+
+
+def test_legacy_pinned_tokens_are_migrated(tmp_path) -> None:
+    target = tmp_path / "modern" / "settings.json"
+    legacy = tmp_path / "pinned_tokens.json"
+    legacy.write_text(json.dumps(["solana", "bitcoin", "solana", ""]), encoding="utf-8")
+
+    loaded = load_settings(target, legacy)
+
+    assert loaded.pinned == ["solana", "bitcoin"]
+    assert target.exists()
+    persisted = json.loads(target.read_text(encoding="utf-8"))
+    assert persisted["pinned"] == ["solana", "bitcoin"]
+
+
+def test_broken_legacy_file_does_not_break_startup(tmp_path) -> None:
+    target = tmp_path / "settings.json"
+    legacy = tmp_path / "pinned_tokens.json"
+    legacy.write_text("not-json", encoding="utf-8")
+    loaded = load_settings(target, legacy)
+    assert loaded.pinned == ["bitcoin", "ethereum"]

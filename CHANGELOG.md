@@ -1,5 +1,20 @@
 # Changelog
 
+## 6.1.0 - 2026-09-17
+
+### Restored
+- Animated compact price ticker inspired by the classic v3-v5 typewriter display.
+- One-time migration of legacy `pinned_tokens.json` watch lists into modern per-user settings.
+
+### Improved
+- The restored ticker uses plain text instead of animating partial HTML markup, preventing broken intermediate rendering.
+- Legacy watch-list migration sanitizes duplicates and blank entries and never blocks startup when an old file is invalid.
+- README now displays the custom application icon and documents the real upgrade path from v1-v5.
+
+### Tested
+- Regression coverage for ticker summaries and long watch-list limits.
+- Regression coverage for legacy pin migration and malformed legacy state.
+
 ## 6.0.0 - 2026-09-16
 
 ### Added
