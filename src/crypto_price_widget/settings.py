@@ -76,7 +76,7 @@ def _load_legacy_pins(path: Path) -> list[str] | None:
         value = str(item).strip()
         if value and value not in pinned and len(pinned) < 50:
             pinned.append(value)
-    return pinned or None
+    return pinned
 
 
 def load_settings(path: Path | None = None, legacy_path: Path | None = None) -> AppSettings:
@@ -90,10 +90,11 @@ def load_settings(path: Path | None = None, legacy_path: Path | None = None) -> 
 
     # v1-v5 stored the pin list beside the script/executable as pinned_tokens.json.
     # Import it once when the modern per-user settings file does not exist, so an
-    # upgrade does not silently reset a user's watch list.
+    # upgrade does not silently reset a user's watch list. A valid empty legacy
+    # list is meaningful and must remain empty after migration.
     legacy = legacy_path or (Path.cwd() / "pinned_tokens.json")
     pins = _load_legacy_pins(legacy)
-    if pins:
+    if pins is not None:
         migrated = AppSettings(pinned=pins)
         try:
             save_settings(migrated, target)
