@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "crypto-price-widget-swir"
-version = "6.1.0"
+version = "6.2.0"
 description = "Modern desktop cryptocurrency price widget powered by CoinGecko."
 readme = "README.md"
 requires-python = ">=3.10,<3.15"
