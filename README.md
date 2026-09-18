@@ -1,57 +1,73 @@
+<!-- SWIR-README-STANDARD:v2 -->
+
 <div align="center">
 
-<img src="assets/crypto-price-widget.svg" width="160" alt="Crypto Price Widget application icon">
+<img width="100%" src="assets/readme/hero.svg" alt="Crypto Price Widget — desktop cryptocurrency market monitor" />
 
-# Crypto Price Widget v6.2
+<br>
 
-### Fast, modern desktop cryptocurrency monitoring powered by CoinGecko
+![Python](https://img.shields.io/badge/Python-3.10--3.14-02050A?style=for-the-badge&logo=python&logoColor=62E5FF)
+![Qt](https://img.shields.io/badge/Qt-PySide6-02050A?style=for-the-badge&logo=qt&logoColor=62E5FF)
+![Windows](https://img.shields.io/badge/Windows-EXE-02050A?style=for-the-badge&logo=windows11&logoColor=62E5FF)
+![Release](https://img.shields.io/badge/Release-v6.2.0-02050A?style=for-the-badge&logo=github&logoColor=62E5FF)
 
-**Python 3.10-3.14 • PySide6 / Qt 6 • PL / EN / NO • Background Refresh • Search • Pinned Assets • Animated Ticker • Windows EXE**
+[![Author](https://img.shields.io/badge/Author-Swir-0088FF?style=flat-square&logo=github)](https://github.com/Swir)
+[![Stars](https://img.shields.io/github/stars/Swir/CyptoPriceWidget?style=flat-square&color=0088FF)](https://github.com/Swir/CyptoPriceWidget/stargazers)
+
+<br>
+
+[**Highlights**](#-highlights) · [**Quick Start**](#-quick-start) · [**Progress**](#-progress) · [**Releases**](#-releases)
 
 </div>
 
-## Why v6.2 exists
+# Crypto Price Widget
 
-The v6 modernization replaced the old `v1.py` through `v5.py` scripts with one maintainable application. A second regression audit found two important compatibility gaps: the classic project existed in both Polish and English forms, while the modern UI had become English-only, and an intentionally empty watch list could not survive a restart because it was silently replaced by the default Bitcoin/Ethereum list.
+A desktop cryptocurrency price monitor powered by CoinGecko, with searchable assets, pinned watch lists, background refresh, multilingual UI and a packaged Windows build.
 
-v6.2 fixes both issues and also strengthens Windows release validation by starting a real Qt window from both source and the packaged EXE before a release can be published.
+<img width="100%" src="https://raw.githubusercontent.com/Swir/Swir/main/assets/power-divider-v4.svg" alt="SWIR electric divider" />
 
-The historical repository is named `CyptoPriceWidget`; the application itself uses the corrected **Crypto Price Widget** branding.
+## 📍 Project Status
 
-## Features
+<p align="center">
+  <img width="100%" src="assets/readme/progress-card.svg" alt="Crypto Price Widget product progress — N/A because no authoritative product roadmap is defined" />
+</p>
 
-- live CoinGecko prices and 24-hour percentage change
-- searchable asset catalog by coin name, symbol or CoinGecko ID
-- up to 50 pinned assets, including a fully valid empty watch list
-- restored animated compact price ticker inspired by the classic v3-v5 typewriter display
-- one-time migration of legacy `pinned_tokens.json` when modern settings do not yet exist
-- **automatic system-language mode plus manual EN / PL / NO selection**
-- restored Polish labels from the classic application while retaining English support
-- USD, EUR, GBP, NOK and PLN display currencies
-- selectable refresh interval: 20, 30, 40, 60, 120 or 300 seconds
-- classic 40-second refresh cadence as the modern default
-- automatic background refresh without freezing the GUI
-- resilient HTTPS requests with explicit timeouts and retries for temporary failures and rate limits
-- persistent per-user settings via the platform application-data directory
-- Pin and Unpin controls plus manual Refresh
-- compact dark-blue Windows 11-friendly interface
-- custom application icon displayed above, used by the GUI and embedded in the Windows EXE
-- `by Swir` GitHub footer
-- official Qt for Python bindings (PySide6)
-- automated tests on Python 3.10, 3.11, 3.12, 3.13 and 3.14
-- Windows source-GUI smoke test in CI
-- packaged-EXE GUI smoke test before publication
-- automated Windows EXE + portable ZIP + SHA256 release pipeline
+| Item | Status |
+|---|---|
+| Current stage | Maintained v6.x desktop utility |
+| Application version | **6.2.0** |
+| Main platform | Windows; source can run where PySide6 is supported |
+| Latest public release | [v6.2.0](https://github.com/Swir/CyptoPriceWidget/releases/tag/v6.2.0) |
+| Product progress | **N/A** — no authoritative measurable roadmap exists |
 
-## Upgrade from v1-v5
+## 🚀 Overview
 
-Older releases kept the watch list in a `pinned_tokens.json` file beside the program. On first modern start, if the per-user settings file does not exist and a valid `pinned_tokens.json` is present in the working directory, the app imports those coin IDs. Duplicates and blank entries are cleaned automatically. A broken legacy file is ignored rather than preventing startup.
+The v6 line replaced the historical `v1.py`–`v5.py` scripts with one maintainable PySide6 application. v6.2 restores multilingual behavior, preserves intentionally empty watch lists and strengthens GUI validation while keeping the classic ticker and legacy pinned-token migration path.
 
-After successful migration the modern settings file becomes authoritative; the old file is not modified.
+The repository name remains `CyptoPriceWidget`; the application branding is **Crypto Price Widget**.
 
-The older project also shipped separate Polish and English scripts. v6.2 replaces those duplicated codebases with one translation layer. `AUTO` follows the system language where supported and falls back to English. PL, EN and NO can also be selected directly in the application.
+## ✨ Highlights
 
-## Run from source
+| Feature | What it does |
+|---|---|
+| 📈 Live market data | Reads CoinGecko prices and 24-hour percentage change |
+| 🔎 Asset search | Finds assets by name, symbol or CoinGecko ID |
+| 📌 Watch list | Supports up to 50 pinned assets, including an intentionally empty list |
+| 📰 Classic ticker | Shows the restored compact animated price ticker |
+| 🌍 Languages | `AUTO`, English, Polish and Norwegian UI modes |
+| 💱 Currencies | USD, EUR, GBP, NOK and PLN display currencies |
+| ⏱️ Refresh control | 20, 30, 40, 60, 120 or 300 second intervals; 40 seconds is the default |
+| 💾 Settings | Stores user preferences in the operating system application-data location |
+| 🪟 Windows packaging | Release pipeline produces EXE, portable ZIP and SHA-256 files |
+| 🧪 Validation | Python 3.10–3.14 tests plus source and packaged Qt GUI smoke checks |
+
+## ⚙️ Quick Start
+
+### Recommended — Windows release
+
+Download the current files from [GitHub Releases](https://github.com/Swir/CyptoPriceWidget/releases/latest). v6.2.0 provides `CryptoPriceWidget.exe`, a Windows x64 portable ZIP and checksum files.
+
+### From source
 
 ```bash
 git clone https://github.com/Swir/CyptoPriceWidget.git
@@ -62,21 +78,57 @@ python -m pip install -e .
 python main.py
 ```
 
-On Linux/macOS, activate the virtual environment using the platform-appropriate command.
+On Linux/macOS, use the platform-appropriate virtual-environment activation command.
 
-For an offline GUI startup verification that does not call CoinGecko:
+Offline GUI startup check:
 
 ```bash
 python main.py --smoke-gui
 ```
 
-## Settings
+## 📋 Requirements / Compatibility
 
-Pinned assets, currency, refresh interval and language preference are saved outside the repository using the operating system's application-data location. This keeps personal state out of Git and lets a packaged EXE update without overwriting preferences.
+- Python **3.10–3.14** according to the package metadata and CI matrix
+- PySide6 / Qt 6
+- Internet access for live CoinGecko data
+- Windows x64 for the published EXE/portable release
+- Other desktop platforms may run from source when the required Python/Qt stack is available; no packaged non-Windows release is currently published
 
-Supported display currencies: **USD, EUR, GBP, NOK, PLN**. The default refresh interval is **40 seconds**, matching the useful cadence from the classic v5 widget while still enforcing a minimum of 20 seconds to reduce unnecessary API pressure.
+## 🎮 Usage / Workflow
 
-## Development
+Search for an asset, pin the coins you want to monitor, choose a display currency and refresh interval, then use manual or automatic refresh. The selected watch list, currency, interval and language are persisted outside the repository.
+
+Older installations may contain `pinned_tokens.json`. If modern settings do not yet exist, the application can import that legacy watch list once; invalid legacy data is ignored rather than blocking startup.
+
+## 🧠 Technology / Architecture
+
+| Layer | Technology / role |
+|---|---|
+| Desktop UI | PySide6 / Qt 6 |
+| Market data | CoinGecko HTTPS API client with timeouts/retries |
+| Settings | Per-user application-data storage plus legacy watch-list migration |
+| Tests | pytest + compile checks + Qt GUI smoke tests |
+| Packaging | PyInstaller Windows one-file build through GitHub Actions |
+
+## 🗺️ Progress
+
+<p align="center">
+  <img width="100%" src="assets/readme/progress-mini.svg" alt="Crypto Price Widget product roadmap progress — N/A" />
+</p>
+
+**Measured scope:** product-roadmap completion. **Result:** **N/A** because the repository does not define an authoritative checklist or weighted roadmap from which a trustworthy product-completion percentage can be calculated. Release version, test count and CI success are not used as a substitute.
+
+## 📦 Releases
+
+Latest verified public release: **v6.2.0**. The release contains:
+
+- `CryptoPriceWidget.exe`
+- `CryptoPriceWidget-v6.2.0-Windows-x64.zip`
+- SHA-256 checksum files
+
+[**Open GitHub Releases →**](https://github.com/Swir/CyptoPriceWidget/releases)
+
+## 🧪 Development
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -85,33 +137,26 @@ python main.py --smoke-gui
 python tools/build_icon.py
 ```
 
-Regression coverage includes price formatting, ticker summaries, legacy pinned-token migration, empty-watch-list persistence, language resolution, settings sanitization and model parsing.
+Regression coverage includes price formatting, ticker summaries, legacy watch-list migration, empty-watch-list persistence, language resolution, settings sanitization and model parsing.
 
-Project layout:
+## ⚠️ Limitations / Market-data disclaimer
 
-```text
-src/crypto_price_widget/   application package
-assets/                    source artwork shown in this README and used for the app icon
-tests/                     unit and regression tests
-tools/build_icon.py        PNG/ICO generator
-.github/workflows/         CI and Windows release automation
-main.py                    application entry point
-```
+- Market prices can be delayed, unavailable or rate-limited by the upstream provider.
+- The application monitors market information only; it does not execute trades and is not financial or investment advice.
+- A repository license file is not currently present; review the repository terms before redistributing modified copies.
 
-## Releases
+## 🔎 Search Keywords
 
-Numbered releases contain:
+`crypto price widget` • `cryptocurrency desktop monitor` • `CoinGecko price tracker` • `PySide6 crypto app` • `Qt cryptocurrency widget` • `Windows crypto price monitor` • `Python market data GUI` • `crypto watch list desktop` • `multilingual crypto tracker` • `NOK PLN crypto prices` • `portable crypto monitor` • `CoinGecko desktop app`
 
-- `CryptoPriceWidget.exe`
-- `CryptoPriceWidget-vX.Y.Z-Windows-x64.zip`
-- SHA256 checksum files for both downloads
+<img width="100%" src="https://raw.githubusercontent.com/Swir/Swir/main/assets/power-divider-v4.svg" alt="SWIR electric divider" />
 
-The release pipeline runs unit tests, starts the Qt GUI offscreen, generates the Windows ICO, builds the executable, checks `--version`, starts the **packaged GUI itself** offscreen, and only then publishes the release.
+<div align="center">
 
-## Market-data disclaimer
+### `TRACK • VERIFY • PACKAGE • EVOLVE`
 
-Prices can be delayed, unavailable or rate-limited by the upstream provider. Crypto Price Widget is an informational monitor only; it does not execute trades and does not provide financial or investment advice.
+⭐ **If this project is useful, consider leaving a star.**
 
-## Author
+[**← SWIR profile**](https://github.com/Swir) · [**All projects →**](https://github.com/Swir?tab=repositories)
 
-Developed by **Swir** — https://github.com/Swir
+</div>
