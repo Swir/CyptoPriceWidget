@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">Crypto Price Widget</title>
+  <desc id="desc">SWIR project banner for a desktop CoinGecko cryptocurrency monitor.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#02050A"/><stop offset="0.55" stop-color="#07111C"/><stop offset="1" stop-color="#02050A"/></linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#0088FF"/><stop offset="0.5" stop-color="#62E5FF"/><stop offset="1" stop-color="#0088FF"/></linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#62E5FF" stroke-opacity="0.055"/></pattern>
+  </defs>
+  <rect width="1200" height="320" rx="26" fill="url(#bg)"/><rect x="1" y="1" width="1198" height="318" rx="25" fill="none" stroke="#62E5FF" stroke-opacity="0.25"/><rect width="1200" height="320" rx="26" fill="url(#grid)"/>
+  <path d="M0 250C180 210 250 300 430 258S720 214 885 248 1070 282 1200 232" fill="none" stroke="url(#cyan)" stroke-opacity="0.24" stroke-width="2"/>
+  <g transform="translate(72 72)"><rect width="154" height="154" rx="32" fill="#07111C" stroke="#62E5FF" stroke-opacity="0.55"/><circle cx="77" cy="77" r="48" fill="none" stroke="#62E5FF" stroke-width="7" filter="url(#glow)"/><path d="M78 44v66M58 60h31c18 0 21 22 1 24H63m0 0h32c19 0 17 25-2 25H58" fill="none" stroke="#F4FAFF" stroke-width="7" stroke-linecap="round"/><path d="M38 126l25-20 18 9 36-34" fill="none" stroke="#0088FF" stroke-width="5"/></g>
+  <text x="270" y="70" font-family="Segoe UI,Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="4" fill="#62E5FF">SWIR PROJECT</text>
+  <text x="270" y="145" font-family="Segoe UI,Arial,sans-serif" font-size="55" font-weight="800" fill="#F4FAFF">CRYPTO PRICE WIDGET</text>
+  <text x="272" y="190" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="500" fill="#B8D2E0">CoinGecko desktop market monitor</text>
+  <text x="272" y="232" font-family="Segoe UI,Arial,sans-serif" font-size="16" font-weight="650" letter-spacing="1.4" fill="#62E5FF">PYSIDE6  •  WINDOWS  •  EN / PL / NO  •  MARKET DATA</text>
+  <g transform="translate(1015 242)"><circle r="4" fill="#62E5FF" filter="url(#glow)"/><circle cx="25" r="4" fill="#0088FF"/><circle cx="50" r="4" fill="#62E5FF" opacity="0.5"/></g>
+</svg>
